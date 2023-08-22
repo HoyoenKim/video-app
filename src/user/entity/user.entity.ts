@@ -18,6 +18,6 @@ export class User {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
 
-    //@OneToMany(() => Video, (video) => video.user)
-    //videos: Video[];
+    @OneToMany(() => Video, (video) => video.user)
+    videos: Video[];
 }
