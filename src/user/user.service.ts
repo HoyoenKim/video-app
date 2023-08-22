@@ -11,11 +11,11 @@ export class UserService {
     ) {}
 
     async findAll() {
-        return;
+        return 'find all users';
     }
 
     async findOne(id: string) {
-        return;
+        return 'find user';
     }
 
     async create(email: string, password: string) {
