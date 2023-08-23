@@ -5,6 +5,16 @@ export class SignupResDto {
         required: true
     })
     id: string;
+
+    @ApiProperty({
+        required: true
+    })
+    accessToken: string;
+
+    @ApiProperty({
+        required: true
+    })
+    refreshToken: string;
 }
 
 export class SigninResDto {

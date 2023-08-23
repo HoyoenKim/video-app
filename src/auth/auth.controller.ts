@@ -22,8 +22,8 @@ export class AuthController {
     async signup(@Body() signupReqDto: SignupReqDto): Promise<SignupResDto> {
         const { email, password, passwordConfirm } = signupReqDto;
         if(password !== passwordConfirm) throw new BadRequestException('Password and PasswordConfirm is not matched.');
-        const { id } = await this.authService.signup(email, password);
-        return { id };
+        const { id, accessToken, refreshToken } = await this.authService.signup(email, password);
+        return { id, accessToken, refreshToken };
     }
 
     @ApiPostResponse(SigninResDto)

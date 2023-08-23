@@ -22,11 +22,11 @@ export class UserService {
         return 'find user';
     }
 
-    async create(email: string, password: string) {
-        const user = this.userRepository.create({ email, password});
-        await this.userRepository.save(user);
-        return user;
-    }
+    //async create(email: string, password: string) {
+    //    const user = this.userRepository.create({ email, password});
+    //    await this.userRepository.save(user);
+    //    return user;
+    //}
 
     async findOneByEmail(email: string) {
         const user = await this.userRepository.findOneBy({
@@ -38,5 +38,17 @@ export class UserService {
     async checkUserIsAdmin(id: string) {
         const user = await this.userRepository.findOneBy({ id });
         return user.role === Role.Admin
+    }
+
+    async createBulk() {
+        for (let i = 4 ; i <= 10000 ; i++) {
+            await this.userRepository.save(
+                this.userRepository.create({
+                    email: `example${i}@example.com`,
+                    password: `Password1!`,
+                })
+            )
+        }
+        return;
     }
 }

@@ -12,12 +12,20 @@ import { RefreshToken } from './auth/entity/refresh-token.entity';
 import { Video } from './video/entity/video.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import swaggerConfig from './config/swagger.config';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { HealthModule } from './health/health.module';
+import sentryConfig from './config/sentry.config';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [postgresConfig, jwtConfig],
+      load: [postgresConfig, jwtConfig, swaggerConfig, sentryConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -30,11 +38,12 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
           username: configService.get('postgres.username'),
           password: configService.get('postgres.password'),
           autoLoadEntities: true,
+          synchronize: false,
         };
         if (configService.get('STAGE') === 'local') {
           console.log('Sync postgres');
           obj = Object.assign(obj, {
-            synchronize: true,
+            //synchronize: true,
             logging: true,
           })
         }
@@ -44,7 +53,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     AnalyticsModule, 
     AuthModule, 
     UserModule, 
-    VideoModule
+    VideoModule, HealthModule
   ],
   providers: [Logger],
 })

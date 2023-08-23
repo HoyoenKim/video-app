@@ -8,7 +8,9 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    //@Column()
     @Column({ unique: true })
+    // unique -> auto index, index not exist -> do not searching with it.
     email: string;
 
     @Column()
