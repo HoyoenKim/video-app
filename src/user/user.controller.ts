@@ -22,10 +22,16 @@ export class UserController {
     @ApiGetItemsResponse(FindUserResDto)
     @Roles(Role.Admin)
     @Get()
-    findAll(@Query() pageReqDto: PageReqDto, @User() user: UserAfterAuth) {
-        console.log(user);
+    async findAll(@Query() pageReqDto: PageReqDto): Promise<FindUserResDto[]> {
         const { page, size } = pageReqDto;
-        return this.userService.findAll();
+        const users = await this.userService.findAll(page, size);
+        return users.map(({ id, email, createdAt}) => {
+            return {
+                id,
+                email,
+                createdAt: createdAt.toISOString(),
+            };
+        });
     }
 
     @ApiBearerAuth()

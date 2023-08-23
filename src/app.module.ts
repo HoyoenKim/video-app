@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, Logger } from '@nestjs/common';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
@@ -11,6 +11,7 @@ import { User } from './user/entity/user.entity';
 import { RefreshToken } from './auth/entity/refresh-token.entity';
 import { Video } from './video/entity/video.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 
 @Module({
   imports: [
@@ -45,5 +46,10 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule, 
     VideoModule
   ],
+  providers: [Logger],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+      consumer.apply(LoggerMiddleware).forRoutes("*");
+  }
+}

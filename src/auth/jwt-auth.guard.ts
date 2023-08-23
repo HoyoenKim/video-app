@@ -1,4 +1,4 @@
-import { ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ExecutionContext, Inject, Injectable, Logger, LoggerService, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { AuthGuard } from "@nestjs/passport";
@@ -13,7 +13,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
         private readonly jwtService: JwtService,
         private readonly userService: UserService,
-        private readonly reflector: Reflector,       
+        private readonly reflector: Reflector,
+        @Inject(Logger)
+        private readonly logger: LoggerService,      
     ) {
         super();
     }
@@ -33,8 +35,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         const decode = this.jwtService.decode(token);
 
         if (url !== '/api/auth/refresh' && decode['tokenType'] === 'refresh') {
-            console.log('access token is required');
-            throw new UnauthorizedException();
+            const error = new UnauthorizedException('access token is required');
+            this.logger.error(error.message, error.stack);
+            throw error;
         }
 
         const requireRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
