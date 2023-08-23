@@ -38,5 +38,5 @@ export class FindVideoResDto {
     @ApiProperty({
         required: true,
     })
-    user: FindVideoResDto;
+    user: FindVideoUserResDto;
 }
