@@ -12,4 +12,21 @@ export class SigninResDto {
         required: true
     })
     accessToken: string;
+
+    @ApiProperty({
+        required: true
+    })
+    refreshToken: string;
+}
+
+export class RefreshResDto {
+    @ApiProperty({
+        required: true
+    })
+    accessToken: string;
+
+    @ApiProperty({
+        required: true
+    })
+    refreshToken: string;
 }

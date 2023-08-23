@@ -7,6 +7,10 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import postgresConfig from './config/postgres.config';
 import jwtConfig from './config/jwt.config';
+import { User } from './user/entity/user.entity';
+import { RefreshToken } from './auth/entity/refresh-token.entity';
+import { Video } from './video/entity/video.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -24,12 +28,12 @@ import jwtConfig from './config/jwt.config';
           database: configService.get('postgres.database'),
           username: configService.get('postgres.username'),
           password: configService.get('postgres.password'),
-          autoLoadEntities: true
+          autoLoadEntities: true,
         };
         if (configService.get('STAGE') === 'local') {
           console.log('Sync postgres');
           obj = Object.assign(obj, {
-            synchronized: true,
+            synchronize: true,
             logging: true,
           })
         }
@@ -39,6 +43,7 @@ import jwtConfig from './config/jwt.config';
     AnalyticsModule, 
     AuthModule, 
     UserModule, 
-    VideoModule],
+    VideoModule
+  ],
 })
 export class AppModule {}
