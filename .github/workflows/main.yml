@@ -1,15 +1,11 @@
 name: CI/CD Docker
 
-- name: set lower case owner name
-  run: |
-    echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-  env:
-    OWNER: '${{ github.repository_owner }}'
 on:
   push:
     branches: [main]
 
 env:
+  OWNER: '${{ github.repository_owner }}'
   DOCKER_IMAGE: ghcr.io/${{ OWNER_LC }}/videoapp
   VERSION: ${{ github.sha }}
   NAME: cicd_test
@@ -19,6 +15,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -61,6 +60,9 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
       - name: Login to ghcr
         uses: docker/login-action@v1
         with:
