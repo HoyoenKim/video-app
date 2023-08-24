@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/video-app
+  DOCKER_IMAGE: ghcr.io/${{ github.actor }}/videoapp
   VERSION: ${{ github.sha }}
   NAME: cicd_test
 
