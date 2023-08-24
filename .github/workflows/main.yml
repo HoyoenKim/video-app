@@ -1,13 +1,17 @@
+- name: set lower case owner name
+  run: |
+    echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+  env:
+    OWNER: '${{ github.repository_owner }}'
+
 name: CI/CD Docker
+
 on:
   push:
     branches: [main]
-run: |
-  echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
 
 env:
-  OWNER: '${{ github.repository_owner }}'
-  DOCKER_IMAGE: ghcr.io/${{ github.repository_owner }}/videoapp
+  DOCKER_IMAGE: ghcr.io/${{ OWNER_LC }}/videoapp
   VERSION: ${{ github.sha }}
   NAME: cicd_test
 
