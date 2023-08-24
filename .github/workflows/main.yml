@@ -31,18 +31,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ghcr.io/${{ OWNER_LC }}/videoapp:latest
+          tags: ghcr.io/hoyoenkim/videoapp:latest
           context: .
           build-args: |
             "STAGE=${{ secrets.STAGE }}"
@@ -66,12 +61,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-        env:
-          OWNER: '${{ github.repository_owner }}'
       - name: Docker run
         run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ghcr.io/${{ OWNER_LC }}/videoapp:latest
+          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ghcr.io/hoyoenkim/videoapp:latest
           docker run --add-host=host.docker.internal:host-gateway -d -p 80:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest
