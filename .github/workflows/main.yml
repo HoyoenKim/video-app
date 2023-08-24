@@ -5,6 +5,7 @@ on:
     branches: [main]
 
 env:
+  DOCKER_IMAGE: ghcr.io/hoyoenkim/videoapp
   VERSION: ${{ github.sha }}
   NAME: cicd_test
 
@@ -37,7 +38,7 @@ jobs:
         with:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ghcr.io/hoyoenkim/videoapp:latest
+          tags: ${{ env.DOCKER_IMAGE }}:latest
           context: .
           build-args: |
             "STAGE=${{ secrets.STAGE }}"
@@ -63,5 +64,5 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
       - name: Docker run
         run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ghcr.io/hoyoenkim/videoapp:latest
+          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
           docker run --add-host=host.docker.internal:host-gateway -d -p 80:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest
