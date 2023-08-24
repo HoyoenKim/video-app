@@ -1,8 +1,8 @@
 name: set lower case owner name
-  run: |
-    echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
-  env:
-    OWNER: '${{ github.repository_owner }}'
+run: |
+  echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+env:
+  OWNER: '${{ github.repository_owner }}'
 
 name: CI/CD Docker
 on:
