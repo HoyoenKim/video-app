@@ -5,8 +5,6 @@ on:
     branches: [main]
 
 env:
-  OWNER: '${{ github.repository_owner }}'
-  DOCKER_IMAGE: ghcr.io/${{ OWNER_LC }}/videoapp
   VERSION: ${{ github.sha }}
   NAME: cicd_test
 
@@ -15,9 +13,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
       - name: Check out source code
         uses: actions/checkout@v2
       - name: Set up docker buildx
@@ -36,13 +31,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}:latest
+          tags: ghcr.io/${{ OWNER_LC }}/videoapp:latest
           context: .
           build-args: |
             "STAGE=${{ secrets.STAGE }}"
@@ -60,16 +60,18 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, Linux, x64]
     steps:
-      - name: set lower case owner name
-        run: |
-          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
       - name: Login to ghcr
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+      - name: set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
       - name: Docker run
         run: |
-          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ${{ env.DOCKER_IMAGE }}:latest
+          docker stop ${{ env.NAME }} && docker rm ${{ env.NAME }} && docker rmi ghcr.io/${{ OWNER_LC }}/videoapp:latest
           docker run --add-host=host.docker.internal:host-gateway -d -p 80:3000 --name ${{ env.NAME }} --restart always ${{ env.DOCKER_IMAGE }}:latest
