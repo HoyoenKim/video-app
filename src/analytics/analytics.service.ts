@@ -14,7 +14,7 @@ export class AnalyticsService {
     @Cron(CronExpression.EVERY_MINUTE)
     async handleEmailCron() {
         Logger.log('Email task called');
-        const videos = await this.videoService.findTop5Download();
-        this.emailService.send(videos);
+        //const videos = await this.videoService.findTop5Download();
+        //this.emailService.send(videos);
     }
 }

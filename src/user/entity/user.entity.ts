@@ -1,5 +1,5 @@
-import { RefreshToken } from "src/auth/entity/refresh-token.entity";
-import { Video } from "src/video/entity/video.entity";
+import { RefreshToken } from "../../auth/entity/refresh-token.entity";
+import { Video } from "../../video/entity/video.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Role } from "../enum/user.enum";
 
